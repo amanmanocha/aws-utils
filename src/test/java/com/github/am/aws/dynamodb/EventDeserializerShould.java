@@ -8,9 +8,9 @@ import java.util.List;
 import org.junit.Test;
 
 public class EventDeserializerShould {
-	private EventDeserializer eventDeserializer = new EventDeserializer();
+  private EventDeserializer eventDeserializer = new EventDeserializer();
 
-	//@formatter:off
+  //@formatter:off
 	@Test public void
 	deserialize_dynamodb_new_image_request() throws Exception {
     List<TestType> deserializedModels = eventDeserializer.deserialize(sampleDynamoDbEvent(), TestType.class);
@@ -23,22 +23,22 @@ public class EventDeserializerShould {
 	}
 	//@formatter:on
 
-	private String sampleDynamoDbEvent() throws UnsupportedEncodingException {
-		return "{\"Records\":[{\"eventID\":\"491eea1491aab476cd1071927e53bca4\",\"eventName\":\"INSERT\",\"eventVersion\":\"1.0\",\"eventSource\":\"aws:dynamodb\",\"awsRegion\":\"ap-northeast-1\",\"dynamodb\":{\"Keys\":{\"Id\":{\"S\":\"1\"}},\"NewImage\":{\"token\":{\"S\":\"DUMMY_TOKEN\"},\"id\":{\"N\":\"1\"}},\"SequenceNumber\":\"73200000000001986199874\",\"SizeBytes\":13,\"StreamViewType\":\"NEW_AND_OLD_IMAGES\"},\"eventSourceARN\":\"arn:aws:dynamodb:ap-northeast-1:049428796662:table/advice/stream/2016-05-11T07:24:20.363\"}]}";
-	}
+  private String sampleDynamoDbEvent() throws UnsupportedEncodingException {
+    return "{\"Records\":[{\"eventID\":\"491eea1491aab476cd1071927e53bca4\",\"eventName\":\"INSERT\",\"eventVersion\":\"1.0\",\"eventSource\":\"aws:dynamodb\",\"awsRegion\":\"ap-northeast-1\",\"dynamodb\":{\"Keys\":{\"Id\":{\"S\":\"1\"}},\"NewImage\":{\"token\":{\"S\":\"DUMMY_TOKEN\"},\"id\":{\"N\":\"1\"}},\"SequenceNumber\":\"73200000000001986199874\",\"SizeBytes\":13,\"StreamViewType\":\"NEW_AND_OLD_IMAGES\"},\"eventSourceARN\":\"arn:aws:dynamodb:ap-northeast-1:049428796662:table/advice/stream/2016-05-11T07:24:20.363\"}]}";
+  }
 
-	class TestType {
-		int id;
-		String token;
+  class TestType {
+    int id;
+    String token;
 
-		public int getId() {
-			return id;
-		}
+    public int getId() {
+      return id;
+    }
 
-		public String getToken() {
-			return token;
-		}
+    public String getToken() {
+      return token;
+    }
 
-	}
+  }
 
 }
