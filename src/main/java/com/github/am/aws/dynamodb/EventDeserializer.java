@@ -11,21 +11,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 public class EventDeserializer {
+	private static final String BINARY_TYPE = "\\{\"B\":";
+	private static final String NUMBER_TYPE = "\\{\"N\":";
+	private static final String STRING_TYPE = "\\{\"S\":";
+
+	private static final String RECORDS_NODE = "Records";
+	private static final String DYNAMODB_NODE = "dynamodb";
+	private static final String NEW_IMAGE_NODE = "NewImage";
+
 	private Gson gson = new Gson();
 
 	public <T> List<T> deserialize(String jsonString, Class<T> clazz) throws IOException {
 		JsonNode json = new ObjectMapper().readTree(jsonString);
-		JsonNode recordNodes = json.get("Records");
+		JsonNode recordNodes = json.get(RECORDS_NODE);
 
 		if (recordNodes == null)
 			return emptyList();
 
+		return deserialize(clazz, recordNodes);
+	}
+
+	private <T> List<T> deserialize(Class<T> clazz, JsonNode recordNodes) {
 		List<T> models = new ArrayList<>();
 		for (int i = 0; i < recordNodes.size(); i++) {
-
 			JsonNode recordNode = recordNodes.get(i);
-			JsonNode dynamodbNode = recordNode.get("dynamodb");
-			JsonNode newImageNode = dynamodbNode.get("NewImage");
+			JsonNode dynamodbNode = recordNode.get(DYNAMODB_NODE);
+			JsonNode newImageNode = dynamodbNode.get(NEW_IMAGE_NODE);
 
 			models.add((T) deserializeNewImage("" + newImageNode, clazz));
 		}
@@ -37,9 +48,9 @@ public class EventDeserializer {
 
 		String jsonWithoutTypes = "";
 		for (String part : parts) {
-			jsonWithoutTypes += part.replaceAll("\\{\"S\":", "");
-			jsonWithoutTypes = jsonWithoutTypes.replaceAll("\\{\"N\":", "");
-			jsonWithoutTypes = jsonWithoutTypes.replaceAll("\\{\"B\":", "");
+			jsonWithoutTypes += part.replaceAll(STRING_TYPE, "");
+			jsonWithoutTypes = jsonWithoutTypes.replaceAll(NUMBER_TYPE, "");
+			jsonWithoutTypes = jsonWithoutTypes.replaceAll(BINARY_TYPE, "");
 		}
 		jsonWithoutTypes = jsonWithoutTypes + "}";
 
